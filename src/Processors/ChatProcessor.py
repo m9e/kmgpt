@@ -17,6 +17,7 @@ class ChatProcessor:
     def __init__(self, model="gpt-3.5-turbo", temperature=0.0):
         self.model = model
         self.temperature = temperature
+        self.available_tokens = 4096
 
         # does not affect manual calls to reduce()
         self.reduction_enabled = False
@@ -72,7 +73,7 @@ class ChatProcessor:
                       temperature=self.temperature,
                       model=self.model,
                       messages=self.reducer_messages,
-                      max_tokens=(4096 - tc)
+                      max_tokens=self.available_tokens
                   )
                   self.last_response = response['choices'][0]['message']['content']
                   new_messages.append({"role": m["role"], "content": self.last_response})
@@ -107,6 +108,8 @@ class ChatProcessor:
         self.last_response = response['choices'][0]['message']['content']
         self.last_response_reason = response['choices'][0]['finish_reason']
         self.messages.append({"role": "assistant", "content": self.last_response})
+        token_count = self.tokens(self.messages)
+        self.available_tokens = 4096 - token_count
 
         return self.last_response
 
