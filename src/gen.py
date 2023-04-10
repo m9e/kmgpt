@@ -1,8 +1,12 @@
 import os
+import pwd
 from Processors import ChatProcessor
 import pyperclip
 
-my_name = 'Matt Wallace'
+# Get the current user's full name and home directory
+user_info = pwd.getpwuid(os.getuid())
+full_name = user_info.pw_gecos.split(',')[0]
+home_dir = user_info.pw_dir
 
 # Get the contents of the system clipboard
 clipboard_data = pyperclip.paste()
@@ -14,10 +18,20 @@ whoami = ("For this request, write in the voice of an experienced CTO, "
           "prefer concise language, avoid unnecessary words, but do add context where it may be needed.\n\n")
 
 prompt_files = {
-    'prompt': '/Users/matt/.kmgpt',
-    'reply': '/Users/matt/.kmgpt_reply',
-    'log': '/Users/matt/code/kmgpt/gpt.log'
+    'prompt': os.path.join(home_dir, '.kmgpt'),
+    'reply': os.path.join(home_dir, '.kmgpt_reply'),
+    'log': os.path.join(home_dir, 'code/kmgpt/gpt.log')
 }
+
+# Ensure log file dir exists and use homedir if not
+log_dir = os.path.join(home_dir, 'code/kmgpt')
+log_file = os.path.join(log_dir, 'gpt.log')
+
+# Check if the log directory exists, if not, use '~/gpt.log' instead
+if not os.path.exists(log_dir):
+    log_file = os.path.join(home_dir, 'gpt.log')
+
+prompt_files['log'] = log_file
 
 def read_file(file_path):
     if os.path.exists(file_path):
