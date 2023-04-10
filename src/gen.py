@@ -67,8 +67,9 @@ def build_final_prompt(prompt, reply, clipboard_data):
     final_prompt = ''
     if prompt in twostage_prompts:
         if prompt == 'Ad Hoc':
+            print("Clipboard data is : " + clipboard_data)
             final_prompt = twostage_prompts[prompt] + \
-                reply if reply else '' + "\n\n" + clipboard_data
+                (reply if reply else '') + "\n\n" + clipboard_data
         else:
             final_prompt = whoami + \
                 twostage_prompts[prompt] + \
