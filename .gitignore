@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+log.txt
+
+pyvenv.cfg
+venv/
+lib/
+bin/
